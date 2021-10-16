@@ -1,71 +1,81 @@
-import { useEffect, useState } from "react";
-import Time from "./components/Time";
-import Post from "./components/Post";
-import { Button, Container, Box, Heading, Text } from "@chakra-ui/react";
+//import TestComponent from './components/TestComponent';
+import { Component } from "react";
+import TodoList from "./components/TodoList";
+import TodoForm from "./components/TodoForm";
+import FakeTodos from "./components/FakeTodos";
 
-function App() {
-  //EXEMPLE DE COD ASYNC:
-  //cereri catre serverul DB -> HTTP requests
-  //pastrarea datelor in LocalStorage-obiect global care este accesat din browser
-  //setTimeout(), setInterval()
+const LOCALSTORAGE_KEY = "todos";
 
-  const [posts, setPosts] = useState([]);
-  const [postId, setPostId] = useState("");
+class App extends Component {
+  constructor() {
+    super();
+    const localStorageTodos = window.localStorage.getItem(LOCALSTORAGE_KEY);
+    this.state = {
+      todoList: localStorageTodos ? JSON.parse(localStorageTodos) : [],
+      showFakeTodos: false,
+    };
+  }
 
-  //useEffect(()=>{callback function}, [dependencies])
+  manageLocalStorage = (todos) => {
+    const jsonTodos = JSON.stringify(todos);
+    window.localStorage.setItem(LOCALSTORAGE_KEY, jsonTodos);
+    this.setState({ todoList: todos });
+  };
 
-  //console.log("Hello 1");
+  addTodo = (value) => {
+    if (value !== "") {
+      const newTodoList = [
+        ...this.state.todoList,
+        {
+          task: value,
+          id: Date.now(),
+          completed: false,
+        },
+      ];
+      this.manageLocalStorage(newTodoList);
+    }
+  };
 
-  useEffect(() => {
-    console.log("Hello 2");
-  }, []);
+  markAsCompleted = (id) => {
+    const updatedTodos = this.state.todoList.map((todo) => {
+      if (id === todo.id) {
+        return { ...todo, completed: !todo.completed };
+      }
+      return todo;
+    });
+    return this.manageLocalStorage(updatedTodos);
+  };
 
-  //console.log("Hello 3");
+  removeTodo = () => {
+    const filteredTodos = this.state.todoList.filter(
+      (todo) => todo.completed === false
+    );
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => response.json())
-      .then((data) => setPosts(data));
-  }, []);
+    this.manageLocalStorage(filteredTodos);
+  };
 
-  return (
-    <Container>
-      <Time />
-      <Heading as="h1" textAlign="center">
-        Posts
-      </Heading>
-      {postId ? (
-        <Post postId={postId} setPostId={setPostId} />
-      ) : (
-        posts.map((post) => (
-          <Box
-            key={post.id}
-            my={10}
-            p={5}
-            bg="gray.200"
-            borderWidth="5px"
-            borderRadius="lg"
-            borderColor="teal.400"
-          >
-            <Text>
-              <strong>Title:</strong> {post.title}
-            </Text>
-            <Text>
-              <strong>Content:</strong> {post.body}
-            </Text>
-            <Button
-              colorScheme="teal"
-              size="sm"
-              m={3}
-              onClick={() => setPostId(post.id)}
-            >
-              Show More
-            </Button>
-          </Box>
-        ))
-      )}
-    </Container>
-  );
+  render() {
+    console.log("todos:", this.state.todoList);
+    return (
+      <div className="App">
+        {/* <TestComponent /> */}
+        <div style={{ margin: "30px" }}>
+          <TodoForm addTodo={this.addTodo} removeTodo={this.removeTodo} />
+        </div>
+        <button onClick={() => this.setState({ showFakeTodos: true })}>
+          Show FakeTodos
+        </button>
+        {!this.state.showFakeTodos ? (
+          <TodoList
+            todos={this.state.todoList}
+            markAsCompleted={this.markAsCompleted}
+          />
+        ) : (
+          <FakeTodos />
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
