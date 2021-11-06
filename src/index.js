@@ -3,11 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
+import BooksProvider from "./contexts/booksContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <BooksProvider>
+        <App />
+      </BooksProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")

@@ -1,10 +1,19 @@
 import React from "react";
 import { useParams } from "react-router";
+import { BooksContext } from "../contexts/booksContext";
+import { useContext } from "react";
 
 const Item = ({ books }) => {
-  const params = useParams();
+  const { addItem } = useContext(BooksContext);
 
-  const foundBook = {};
+  const params = useParams();
+  console.log("params: ", params);
+
+  const foundBook = books.find((book) => {
+    return book.isbn13 === params.itemId;
+  });
+
+  console.log("foundBook", foundBook);
 
   return (
     <div className="product">
@@ -21,9 +30,7 @@ const Item = ({ books }) => {
           <h3>{foundBook.price}</h3>
           <p>{foundBook.subtitle}</p>
 
-          <button
-            /*onClick={() => addItem(foundBook)}*/ className="product-button"
-          >
+          <button onClick={() => addItem(foundBook)} className="product-button">
             Add to cart
           </button>
         </div>
