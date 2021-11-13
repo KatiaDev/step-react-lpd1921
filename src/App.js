@@ -1,21 +1,27 @@
 import { Button, Container, Heading } from "@chakra-ui/react";
-import { useSelector, useDispatch } from "react-redux";
-import { increment, decrement } from "./actions/counterActions";
+import { CounterContext } from "./contexts/counterContext";
+import { useContext } from "react";
 
 function App() {
-  //const { state, dispatch } = useContext(CounterContext);
-  const { counter } = useSelector((state) => state);
-  const dispatch = useDispatch();
+  const { state, dispatch } = useContext(CounterContext);
+
+  const increment = () => {
+    dispatch({ type: "INCREMENT" });
+  };
+
+  const decrement = () => {
+    dispatch({ type: "DECREMENT" });
+  };
 
   return (
     <Container className="app">
       <Heading as="h1">Counter</Heading>
-      <Heading as="h2">{counter}</Heading>
+      <Heading as="h2">{state.counter}</Heading>
       <div>
-        <Button onClick={() => dispatch(increment())} m="5px">
+        <Button onClick={() => increment()} m="5px">
           +
         </Button>
-        <Button onClick={() => dispatch(decrement())} m="5px">
+        <Button onClick={() => decrement()} m="5px">
           -
         </Button>
       </div>
