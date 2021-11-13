@@ -1,10 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { BooksContext } from "../contexts/booksContext";
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const { cartItems } = useContext(BooksContext);
+  const { cartItems } = useSelector((state) => state);
   return (
     <div className="navigation">
       <div>

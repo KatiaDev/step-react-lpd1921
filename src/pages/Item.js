@@ -1,10 +1,11 @@
 import React from "react";
 import { useParams } from "react-router";
-import { BooksContext } from "../contexts/booksContext";
-import { useContext } from "react";
+import { addItem } from "../actions/cartActions";
+import { useSelector, useDispatch } from "react-redux";
 
 const Item = ({ books }) => {
-  const { addItem } = useContext(BooksContext);
+  const dispatch = useDispatch();
+  const { cartItems } = useSelector((state) => state);
 
   const params = useParams();
   console.log("params: ", params);
@@ -30,7 +31,24 @@ const Item = ({ books }) => {
           <h3>{foundBook.price}</h3>
           <p>{foundBook.subtitle}</p>
 
-          <button onClick={() => addItem(foundBook)} className="product-button">
+          <button
+            onClick={() => {
+              const newItem = cartItems.find((el) => {
+                return foundBook.isbn13 === el.isbn13;
+              });
+
+              const nextItem = books.find((el) => {
+                return foundBook.isbn13 === el.isbn13;
+              });
+
+              if (!newItem) {
+                dispatch(addItem(nextItem));
+              } else {
+                alert("Item already added to cart.");
+              }
+            }}
+            className="product-button"
+          >
             Add to cart
           </button>
         </div>

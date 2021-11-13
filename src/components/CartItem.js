@@ -1,9 +1,9 @@
 import React from "react";
-import { BooksContext } from "../contexts/booksContext";
-import { useContext } from "react";
+import { removeItem } from "../actions/cartActions";
+import { useDispatch } from "react-redux";
 
 const CartItem = (props) => {
-  const { removeItem } = useContext(BooksContext);
+  const dispatch = useDispatch();
 
   return (
     <div className="shopping-cart_item">
@@ -17,7 +17,7 @@ const CartItem = (props) => {
         <h1 className="shopping-cart__title">{props.title}</h1>
         <p>{props.price}</p>
         <button
-          onClick={() => removeItem(props.isbn13)}
+          onClick={() => dispatch(removeItem(props.isbn13))}
           className="shopping-cart_item-button"
         >
           Remove from cart
