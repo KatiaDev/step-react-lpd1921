@@ -1,13 +1,24 @@
-import RegisterForm from "./components/RegisterForm";
-import { Container, Heading } from "@chakra-ui/react";
+import { Button, Container, Heading } from "@chakra-ui/react";
+import { useSelector, useDispatch } from "react-redux";
+import { increment, decrement } from "./actions/counterActions";
 
 function App() {
+  //const { state, dispatch } = useContext(CounterContext);
+  const { counter } = useSelector((state) => state);
+  const dispatch = useDispatch();
+
   return (
-    <Container className="App">
-      <Heading m="50px" textAlign="center" color="blue.600">
-        Register Form:
-      </Heading>
-      <RegisterForm />
+    <Container className="app">
+      <Heading as="h1">Counter</Heading>
+      <Heading as="h2">{counter}</Heading>
+      <div>
+        <Button onClick={() => dispatch(increment())} m="5px">
+          +
+        </Button>
+        <Button onClick={() => dispatch(decrement())} m="5px">
+          -
+        </Button>
+      </div>
     </Container>
   );
 }
